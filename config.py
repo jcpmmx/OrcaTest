@@ -50,6 +50,7 @@ class ProductionConfig(BaseConfig):
     ENV = Env.PRODUCTION
     DEBUG = False
     TESTING = False
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
 
 def configure_app(app, config_name):
