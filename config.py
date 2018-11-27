@@ -53,17 +53,20 @@ class ProductionConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
 
-def configure_app(app, config_name):
+def configure_app(app, target_env):
     """
-    Adds all configurations from `config_name` to the given Flask app, if any.
+    Sets all configurations in the given Flaks app using a valid target environment.
     """
-    _APP_CONFIG = {
+    _CONFIG_ENV_MAPPING = {
         Env.DEVELOPMENT: DevelopmentConfig,
         Env.TESTING: TestingConfig,
         Env.PRODUCTION: ProductionConfig,
     }
-    config_obj = _APP_CONFIG.get(config_name)
-    if not config_obj:
-        raise ValueError('Invalid configuration profile name: {}'.format(config_name))
+    if isinstance(target_env, str):
+        try:
+            target_env = Env(target_env)
+        except ValueError:
+            target_env = Env.DEVELOPMENT
 
+    config_obj = _CONFIG_ENV_MAPPING[target_env]
     app.config.from_object(config_obj)
