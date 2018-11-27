@@ -16,7 +16,7 @@ class TODOItemsTestCase(unittest.TestCase):
     """
 
     def setUp(self):
-        self.app = create_app(config_name=Env.TESTING)
+        self.app = create_app(Env.TESTING)
         self.client = self.app.test_client
         self.api_todoitems_endpoint = '/api/todoitems/'
         self.api_todoitems_detail_endpoint = '/api/todoitems/{todoitem_id}/'

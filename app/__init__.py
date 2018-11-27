@@ -10,7 +10,7 @@ from config import Env, configure_app
 db = SQLAlchemy()
 
 
-def create_app(config_name=Env.DEVELOPMENT):
+def create_app(config_name):
     app = FlaskAPI(__name__)
     configure_app(app, config_name)
     db.init_app(app)
