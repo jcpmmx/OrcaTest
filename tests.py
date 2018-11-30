@@ -19,8 +19,8 @@ class TODOItemsEndpointTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app(Env.TESTING)
         self.client = self.app.test_client()
-        self.todoitems_endpoint = '/api/todoitem'
-        self.todoitems_detail_endpoint = '/api/todoitem/{todoitem_id}'
+        self.todoitems_endpoint = '/api/todoitems'
+        self.todoitems_detail_endpoint = '/api/todoitems/{todoitem_id}'
         with self.app.app_context():
             db.create_all()
             load_initial_db_data(self.app, db)

@@ -8,6 +8,7 @@ from sqlalchemy.exc import ProgrammingError
 
 from app.models import TODOList
 
+
 class Env(Enum):
     """
     Enum that stores all possible envs.

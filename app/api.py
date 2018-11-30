@@ -100,4 +100,4 @@ def configure_api(app):
     Attaches an API to the given Flask app.
     """
     api = Api(app)
-    api.add_resource(TODOItemsEndpoint, '/api/todoitem', '/api/todoitem/<int:todoitem_id>')
+    api.add_resource(TODOItemsEndpoint, '/api/todoitems', '/api/todoitems/<int:todoitem_id>')
