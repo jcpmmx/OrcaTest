@@ -39,7 +39,9 @@ class TODOItemsEndpoint(Resource):
         return TODOItem.get_all(todolist_id=self.default_todolist.id)
 
     @marshal_with(_RESPONSE_FIELDS)
-    def post(self):
+    def post(self, **kwargs):
+        if kwargs:  # POST doesn't expect URL params
+            abort(405)
         self._set_request_parser()
         request_data = self.request_parser.parse_args()
         self._verify_data(request_data)
