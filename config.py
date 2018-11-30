@@ -4,6 +4,7 @@
 import os
 from enum import Enum
 
+from flask_cors import CORS
 from sqlalchemy.exc import ProgrammingError
 
 from app.models import TODOList
@@ -28,6 +29,7 @@ class BaseConfig(object):
     CSRF_ENABLED = True
     SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/orca'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    CORS_ORIGINS = ['http://localhost:3000']
 
     DEFAULT_TODO_LIST_NAME = '__master__'
 
@@ -55,6 +57,7 @@ class ProductionConfig(BaseConfig):
     DEBUG = False
     TESTING = False
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    CORS_ORIGINS = BaseConfig.CORS_ORIGINS + ['https://todo-jcpmmx-flaskbe.herokuapp.com/api/todoitems']
 
 
 def configure_app(app, target_env):
@@ -75,6 +78,7 @@ def configure_app(app, target_env):
 
     config_obj = _CONFIG_ENV_MAPPING[target_env]
     app.config.from_object(config_obj)
+    CORS(app, resources=r'/api/todoitems', origins=app.config['CORS_ORIGINS'])
 
 
 def configure_db(app, db):
