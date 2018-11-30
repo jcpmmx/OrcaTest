@@ -57,7 +57,7 @@ class ProductionConfig(BaseConfig):
     DEBUG = False
     TESTING = False
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
-    CORS_ORIGINS = BaseConfig.CORS_ORIGINS + ['https://todo-jcpmmx-flaskbe.herokuapp.com/api/todoitems']
+    CORS_ORIGINS = BaseConfig.CORS_ORIGINS + ['https://todo-jcpmmx-reactcli.herokuapp.com']
 
 
 def configure_app(app, target_env):
