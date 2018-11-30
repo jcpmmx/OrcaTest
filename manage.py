@@ -9,9 +9,9 @@ from flask_migrate import Migrate, MigrateCommand
 from app import create_app, db, models
 
 app = create_app(os.getenv('FLASK_ENV'))
+
 migrate = Migrate(app, db)
 manager = Manager(app)
-
 manager.add_command('db', MigrateCommand)
 
 if __name__ == '__main__':

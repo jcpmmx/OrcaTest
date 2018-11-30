@@ -1,7 +1,10 @@
 # coding=utf-8
 
 
-from app import db
+from flask import current_app
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
 class TODOList(db.Model):
@@ -32,9 +35,14 @@ class TODOList(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    @staticmethod
-    def get_all():
-        return TODOList.query.all()
+    @classmethod
+    def get_all(cls):
+        return cls.query.all()
+
+    @classmethod
+    def get_default_todolist(cls):
+        # For simplicity, we're using a default TODO list for all TODO items
+        return cls.query.filter_by(name=current_app.config['DEFAULT_TODO_LIST_NAME']).first()
 
 
 class TODOItem(db.Model):
@@ -48,12 +56,14 @@ class TODOItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
     todolist_id = db.Column(db.Integer, db.ForeignKey('todolists.id'), nullable=False)
+    completed = db.Column(db.Boolean, default=False)
     created = db.Column(db.DateTime, default=db.func.current_timestamp())
     modified = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 
-    def __init__(self, name, todolist_id):
+    def __init__(self, name, todolist_id, completed=False):
         self.name = name
         self.todolist_id = todolist_id
+        self.completed = completed
 
     def __repr__(self):
         return '<TODOItem: {}>'.format(self.name)
@@ -66,15 +76,17 @@ class TODOItem(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'created': self.created.isoformat(),
-            'modified': self.modified.isoformat(),
-            'todolist_id': self.todolist_id,
-        }
+    def update(self, **data):
+        changed = False
+        data.pop('id', None)  # Avoiding PK changes
+        for attr_name, new_value in data.items():
+            current_value = getattr(self, attr_name, None)
+            if new_value and new_value != current_value:  # Caveat: 'Noney' values can't be set right now
+                setattr(self, attr_name, new_value)
+                changed = True
+        if changed:
+            self.save()
 
     @staticmethod
     def get_all(todolist_id):
-        return TODOItem.query.filter_by(todolist_id=todolist_id)
+        return TODOItem.query.filter_by(todolist_id=todolist_id).all()

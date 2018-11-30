@@ -4,6 +4,9 @@
 import os
 from enum import Enum
 
+from sqlalchemy.exc import ProgrammingError
+
+from app.models import TODOList
 
 class Env(Enum):
     """
@@ -55,7 +58,8 @@ class ProductionConfig(BaseConfig):
 
 def configure_app(app, target_env):
     """
-    Sets all configurations in the given Flaks app using a valid target environment.
+    Sets all configurations in the given Flask app using a valid target environment (given either as a str or as a valid
+    Env value).
     """
     _CONFIG_ENV_MAPPING = {
         Env.DEVELOPMENT: DevelopmentConfig,
@@ -70,3 +74,27 @@ def configure_app(app, target_env):
 
     config_obj = _CONFIG_ENV_MAPPING[target_env]
     app.config.from_object(config_obj)
+
+
+def configure_db(app, db):
+    """
+    Links together the given Flask app and the SQLAlchemy instance.
+    It also loads some initial data.
+    """
+    db.init_app(app)
+    with app.app_context():
+        load_initial_db_data(app, db)
+
+
+def load_initial_db_data(app, db):
+    """
+    Loads all required initial data to the given DB.
+    """
+    # Checking if we have the default TODO list
+    try:
+        default_todolist_data = {'name': app.config['DEFAULT_TODO_LIST_NAME']}
+        if not TODOList.query.filter_by(**default_todolist_data).first():
+            default_todolist = TODOList(**default_todolist_data)
+            default_todolist.save()
+    except ProgrammingError:
+        pass  # DB is empty, no tables yet
