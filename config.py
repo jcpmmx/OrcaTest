@@ -78,7 +78,7 @@ def configure_app(app, target_env):
 
     config_obj = _CONFIG_ENV_MAPPING[target_env]
     app.config.from_object(config_obj)
-    CORS(app, resources=r'/api/todoitems', origins=app.config['CORS_ORIGINS'])
+    CORS(app, resources=r'/api/*', origins=app.config['CORS_ORIGINS'])
 
 
 def configure_db(app, db):
