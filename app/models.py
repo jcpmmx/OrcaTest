@@ -87,6 +87,6 @@ class TODOItem(db.Model):
         if changed:
             self.save()
 
-    @staticmethod
-    def get_all(todolist_id):
-        return TODOItem.query.filter_by(todolist_id=todolist_id).all()
+    @classmethod
+    def get_all(cls, todolist_id):
+        return cls.query.filter_by(todolist_id=todolist_id).order_by(cls.created.desc()).all()
