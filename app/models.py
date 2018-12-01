@@ -81,7 +81,7 @@ class TODOItem(db.Model):
         data.pop('id', None)  # Avoiding PK changes
         for attr_name, new_value in data.items():
             current_value = getattr(self, attr_name, None)
-            if new_value and new_value != current_value:  # Caveat: 'Noney' values can't be set right now
+            if new_value is not None and new_value != current_value:
                 setattr(self, attr_name, new_value)
                 changed = True
         if changed:

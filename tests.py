@@ -90,10 +90,13 @@ class TODOItemsEndpointTestCase(unittest.TestCase):
         todoitem_url = self.todoitems_detail_endpoint.format(todoitem_id=response_json['id'])
         # Editing the status of the TODO item recently created
         self.assertFalse(response_json['completed'])
-        new_request_data = {'completed': True}
-        response = self.client.put(todoitem_url, json=new_request_data)
+        response = self.client.put(todoitem_url, json={'completed': True})
         self.assertEqual(response.status_code, 200)
+        # And again
         self.assertTrue(response.get_json()['completed'])
+        response = self.client.put(todoitem_url, json={'completed': False})
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.get_json()['completed'])
         # Editing the name of the TODO item recently created
         new_name = 'Learn ElectronJS as well!'
         new_request_data = {'name': new_name}
@@ -101,7 +104,7 @@ class TODOItemsEndpointTestCase(unittest.TestCase):
         response_json = response.get_json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(new_name, response_json['name'])
-        self.assertTrue(response_json['completed'])
+        self.assertFalse(response_json['completed'])
         # Non-existing TODO items cannot be updated
         response = self.client.put(self.todoitems_detail_endpoint.format(todoitem_id='000'))
         self.assertEqual(response.status_code, 404)
