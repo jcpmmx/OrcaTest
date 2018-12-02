@@ -27,10 +27,13 @@
 ### About this solution
 
 This Flask application contains 2 SQLAlchemy models:  
-- `TODOList`: represents a collection of related TODO items (e.g. "Groceries" or "NY trip"). Internally, the app comes with only one master TODO list, and lists are not available via API.
-- `TODOItem`: a single thing to do  (e.g. "Buy tomatoes" or "Choose museums to visit"). Items have one of 2 possible statuses: completed or not (default value). All items are associated to the master TODO list.
+- `TODOList`: represents a collection of related TODO items (e.g. "Groceries" or "NY trip").  
+Internally, the app comes with only one master TODO list, and lists are not available via API.
+- `TODOItem`: a single thing to do  (e.g. "Buy tomatoes" or "Choose museums to visit").  
+Items have one of 2 possible statuses: completed or not (default value).  
+All items are associated to the master TODO list.
 
-The app also provides 1 API endpoints to interact with TODO items.
+The app also provides one API endpoint to interact with TODO items.  
 This endpoint is RESTful and works with JSON by default.
 
 1. `GET /api/todoitems`: returns a list of all TODO items, sorted by last modified items first.  
